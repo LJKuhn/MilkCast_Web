@@ -52,7 +52,7 @@ def C_visualizacion(df):
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image(os.path.join(imagenes_dir, "mapa de unidades productivas.png"), caption="Mapa de Unidades Productivas", use_container_width=True)
+        st.image(os.path.join(imagenes_dir, "Mapa de unidades productivas.png"), caption="Mapa de Unidades Productivas", use_container_width=True)
 
     with col2:
         st.image(os.path.join(imagenes_dir, "grafico de barras.png"), caption="Gráfico de Barras", use_container_width=True)
