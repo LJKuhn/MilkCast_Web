@@ -126,10 +126,8 @@ with tab1:
     st.markdown(
         '''
         <div style="text-align: justify;">
-           # Links de informacion
-        ### Modelos en Google Drive
-        - url_modelprediccionUs = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D/view?usp=sharing"
-        - url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ/view?usp=sharing"
+           
+        # Links de informacion
 
         ### Datos producción lechera
         - https://www.magyp.gob.ar/sitio/areas/ss_lecheria/ 
