@@ -31,8 +31,8 @@ st.markdown("<h1 style='font-size: 50px;'>ML en el sector agropecuario</h1>", un
 tab1, tab2, tab3 = st.tabs(["Datos y Gráficos", "Prediccion con IPC y dolar", "Prediccion con productos"])
 
 # URLs de los modelos en Google Drive (usando el formato adecuado para gdown)
-url_modelprediccionUS = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D/view?usp=sharing"
-url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ/view?usp=sharing"
+url_modelprediccionUS = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D"
+url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ"
 
 # Directorio donde se guardarán los modelos
 modelos_dir = "modelos"
@@ -80,8 +80,8 @@ with st.expander("Información de los Modelos"):
     mostrar_info_modelo(model1, "Modelo de Clasificación")
 
 # URLs de las imágenes en Google Drive (en formato adecuado)
-url_mapa_unidades = "https://drive.google.com/file/d/1PgVHUgz2u9iOgDUcF4UL4JgVc9DUJj4u/view?usp=sharing"  
-url_grafico_barras = "https://drive.google.com/file/d/1Ht0_HTgXLnOLwoPUFL6AMyakgz40S2tq/view?usp=sharing"  
+url_mapa_unidades = "https://drive.google.com/file/d/1PgVHUgz2u9iOgDUcF4UL4JgVc9DUJj4u"  
+url_grafico_barras = "https://drive.google.com/file/d/1Ht0_HTgXLnOLwoPUFL6AMyakgz40S2tq"  
 
 # Directorio donde se guardarán las imágenes
 imagenes_dir = "imagenes"
