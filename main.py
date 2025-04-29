@@ -80,8 +80,8 @@ with st.expander("Información de los Modelos"):
     mostrar_info_modelo(model1, "Modelo de Clasificación")
 
 # URLs de las imágenes en Google Drive (en formato adecuado)
-url_mapa_unidades = "https://drive.google.com/file/d/1PgVHUgz2u9iOgDUcF4UL4JgVc9DUJj4u"  
-url_grafico_barras = "https://drive.google.com/file/d/1Ht0_HTgXLnOLwoPUFL6AMyakgz40S2tq"  
+url_mapa_unidades = "https://drive.google.com/uc?id=1PgVHUgz2u9iOgDUcF4UL4JgVc9DUJj4u"
+url_grafico_barras = "https://drive.google.com/uc?id=1Ht0_HTgXLnOLwoPUFL6AMyakgz40S2tq"
 
 # Directorio donde se guardarán las imágenes
 imagenes_dir = "imagenes"
@@ -120,6 +120,7 @@ def limpiar_estado_tab_actual(tab_seleccionado):
 # Contenido de la pestaña 1: Datos y Gráficos
 with tab1:
     limpiar_estado_tab_actual("Datos y Gráficos")  # Limpiar las otras pestañas al entrar a esta
+
     C_visualizacion(df)
 
     st.markdown(
