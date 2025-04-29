@@ -101,8 +101,8 @@ def descargar_imagen(url, path):
         print(f"La imagen {os.path.basename(path)} ya existe.")
 
 # Descargar las imágenes si no existen
-descargar_imagen(url_mapa_unidades, os.path.join(imagenes_dir, "mapa de unidades productivas.png"))
-descargar_imagen(url_grafico_barras, os.path.join(imagenes_dir, "grafico de barras.png"))
+descargar_imagen(url_mapa_unidades, os.path.join(imagenes_dir, "mapa.png"))
+descargar_imagen(url_grafico_barras, os.path.join(imagenes_dir, "grafico.png"))
 
 
 # Cargar el archivo combinado (usado para las visualizaciones)
