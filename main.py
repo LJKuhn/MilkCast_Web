@@ -121,35 +121,40 @@ def limpiar_estado_tab_actual(tab_seleccionado):
 with tab1:
     limpiar_estado_tab_actual("Datos y Gráficos")  # Limpiar las otras pestañas al entrar a esta
     C_visualizacion(df)
-    '''
-    # Links de informacion
-    ### Modelos en Google Drive
-    - url_modelprediccionUs = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D/view?usp=sharing"
-    - url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ/view?usp=sharing"
 
-    ### Datos producción lechera
-    - https://www.magyp.gob.ar/sitio/areas/ss_lecheria/ 
-    - https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-8-89 
-    - https://www.ocla.org.ar/ 
-    - https://datos.gob.ar/ar/dataset?tags=leche&groups=agri 
-    
-    ### Datos climáticos
-    - https://www.argentina.gob.ar/informacion-agroclimatica 
-    - https://www.argentina.gob.ar/inta 
-    - https://siga.inta.gob.ar/#/data 
-    
-    ### Informe o muestreo ejemplos
-    - https://www.unraf.edu.ar/index.php/menucontenidos/164-centro-de-enconomia-aplicada/2962-cea 
-    
-    ### Informe de agronomía hecho por la UNRaf
-    - https://app.powerbi.com/view?r=eyJrIjoiYjQyZjZhZTktOGEwYi00MjdmLWIzZWMtYTFkNTcxN2EzNTQzIiwidCI6IjFiYWViYmNhLWJjNjYtNDc4My05OWJiLTI5OGIxYzNmMTA4MyJ9 
-    
-    ### Informe de unidades productivas por provincias
-    - https://www.ocla.org.ar/noticias/29882853-unidades-productivas-y-rodeo-lechero-a-marzo-de-2024 
-    - https://www.argentina.gob.ar/sites/default/files/87-caracterizacion_tambos_bovinos_diciembre_2021.pdf 
-    - https://www.infortambo.com/blog/en-el-2024-el-numero-de-tambos-cayo-a-9-735-unidades-productivas-de-leche/
+    st.markdown(
+        '''
+        <div style="text-align: justify;">
+           # Links de informacion
+        ### Modelos en Google Drive
+        - url_modelprediccionUs = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D/view?usp=sharing"
+        - url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ/view?usp=sharing"
 
-    '''
+        ### Datos producción lechera
+        - https://www.magyp.gob.ar/sitio/areas/ss_lecheria/ 
+        - https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-8-89 
+        - https://www.ocla.org.ar/ 
+        - https://datos.gob.ar/ar/dataset?tags=leche&groups=agri 
+        
+        ### Datos climáticos
+        - https://www.argentina.gob.ar/informacion-agroclimatica 
+        - https://www.argentina.gob.ar/inta 
+        - https://siga.inta.gob.ar/#/data 
+        
+        ### Informe o muestreo ejemplos
+        - https://www.unraf.edu.ar/index.php/menucontenidos/164-centro-de-enconomia-aplicada/2962-cea 
+        
+        ### Informe de agronomía hecho por la UNRaf
+        - https://app.powerbi.com/view?r=eyJrIjoiYjQyZjZhZTktOGEwYi00MjdmLWIzZWMtYTFkNTcxN2EzNTQzIiwidCI6IjFiYWViYmNhLWJjNjYtNDc4My05OWJiLTI5OGIxYzNmMTA4MyJ9 
+        
+        ### Informe de unidades productivas por provincias
+        - https://www.ocla.org.ar/noticias/29882853-unidades-productivas-y-rodeo-lechero-a-marzo-de-2024 
+        - https://www.argentina.gob.ar/sites/default/files/87-caracterizacion_tambos_bovinos_diciembre_2021.pdf 
+        - https://www.infortambo.com/blog/en-el-2024-el-numero-de-tambos-cayo-a-9-735-unidades-productivas-de-leche/
+        </div>
+        ''',
+        unsafe_allow_html=True
+    )
 
 # Contenido de la pestaña 2: Prediccion con IPC y dolar
 with tab2:
