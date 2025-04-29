@@ -135,7 +135,7 @@ def C_visualizacion(df):
     ### **Consideraciones**:
     
     - Para implementar algoritmos más complejos es necesario contar con más de 1000 registros para que el entrenamiento de los modelos sea más robusto.
-    - La búsqueda de datos es engorrosa, ya que existen muchas fuentes diferentes, incompletas o incongruentes, lo que dificulta los procesos de estandarización de datos, fundamentales para un correcto entrenamiento de los modelos.
+    - La búsqueda de datos es engorrosa, ya que existen muchas fuentes diferentes, incompletas o incongruentes, lo que dificulta los procesos de estandarización de datos, proceso fundamental para un correcto entrenamiento de los modelos.
     - Las versiones Alpha presentadas utilizan únicamente regresión lineal.
     - Estas versiones fueron entrenadas con solo 100 registros, por lo que existe un amplio margen de mejora.
     """)
