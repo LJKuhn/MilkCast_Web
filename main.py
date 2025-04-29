@@ -11,7 +11,7 @@ from componentes.componente_clasificacion import C_clasificacion
 from componentes.componente_eda import C_visualizacion
 
 # Configuración de la página
-st.set_page_config(page_title="Ayuda al tambo", layout="wide")
+st.set_page_config(page_title="MilkCast", layout="wide")
 
 # Usar HTML para personalizar el tamaño del texto
 st.markdown("""
