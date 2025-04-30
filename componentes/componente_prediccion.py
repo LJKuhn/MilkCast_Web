@@ -8,6 +8,20 @@ def C_prediccion(model1):
     # Descripción
     st.write("Introducir el valor del IPC y del dolar para predecir el valor del litro de leche, intente introducir un valor que cuente con decimales.")
 
+    st.markdown("### Instrucciones para ingresar el IPC como variable predictora")
+
+    st.info("""
+    Para usar el IPC como variable predictora en el modelo, ingresá el valor acumulado correspondiente al mes de cada fila.
+
+    - La serie histórica comienza en un valor base de **98**.
+    - El último valor oficial disponible es **7864,1257** para **enero de 2025**.
+    - Para obtener el IPC de **febrero de 2025**, multiplicá: `7864,1257 × 1,021` (2,1% de inflación).
+    - Para **marzo de 2025**, usá: `7864,1257 × 1,021 × 1,037` (2,1% en febrero + 3,7% en marzo, se puede utilizar tambien para principios de abril).
+    - Para **abril de 2025**, deberás continuar multiplicando por el coeficiente del mes correspondiente (cuando esté disponible).
+
+    ⚠️ Recordá: el valor que ingresás debe ser **acumulado**, no solo el porcentaje mensual.
+    """)
+
     # Crear dos columnas para el input
     col1, col2 = st.columns(2)
 

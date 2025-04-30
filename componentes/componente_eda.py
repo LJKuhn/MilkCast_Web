@@ -132,13 +132,36 @@ def C_visualizacion(df):
     )
 
     st.markdown("""
-    ### **Consideraciones**:
+    ## **Consideraciones**:
     
     - Para implementar algoritmos más complejos es necesario contar con más de 1000 registros para que el entrenamiento de los modelos sea más robusto.
     - La búsqueda de datos es engorrosa, ya que existen muchas fuentes diferentes, incompletas o incongruentes, lo que dificulta los procesos de estandarización de datos, proceso fundamental para un correcto entrenamiento de los modelos.
     - Las versiones Alpha presentadas utilizan únicamente regresión lineal.
     - Estas versiones fueron entrenadas con solo 100 registros, por lo que existe un amplio margen de mejora.
+
+    
+    """)
+
+    st.markdown("### Funcionamiento del IPC en los datos utilizados")
+
+    st.markdown("""
+    El **Índice de Precios al Consumidor (IPC)** en esta aplicación se utiliza como un factor de ajuste para mantener los valores monetarios actualizados en términos reales. La serie histórica del IPC comienza con un valor base de **98** y se va modificando mensualmente según los valores oficiales del **IMPCe**, generando una serie acumulativa que refleja la evolución de los precios a lo largo del tiempo.
+
+    A la hora de ingresar manualmente un nuevo dato de IPC (por ejemplo, para proyectar meses futuros), es necesario partir del **último valor disponible**, que actualmente es **7864,1257** correspondiente a **enero de 2025**.
+    """)
+
+    st.markdown("Ejemplo de cálculo para proyectar IPC de abril de 2025:")
+
+    st.markdown("""
+    - IPC de **febrero 2025**: se incrementó un **2,1%**, lo que equivale a multiplicar por **1,021**
+    - IPC de **marzo 2025**: se incrementó un **3,7%**, lo que equivale a multiplicar por **1,037**
+    """)
+
+    st.code("IPC abril 2025 = 7864,1257 × 1,021 × 1,037", language="python")
+
+    st.markdown("""
+    De esta manera, se mantiene la coherencia con la lógica acumulativa del índice desde su base inicial, permitiendo que los modelos realicen comparaciones históricas y proyecciones de manera consistente.
     """)
 
 
-    
+            
