@@ -157,7 +157,7 @@ def C_visualizacion(df):
     - IPC de **marzo 2025**: se incrementó un **3,7%**, lo que equivale a multiplicar por **1,037**
     """)
 
-    st.code("IPC inicial de abril 2025 = 7864,1257 × 1,021 × 1,037 =  8326,3554", language="python")
+    st.code("IPC finales de marzo/inicio de abril 2025 = 7864,1257 × 1,021 × 1,037 =  8326,3554", language="python")
 
     st.markdown("""
     De esta manera, se mantiene la coherencia con la lógica acumulativa del índice desde su base inicial, permitiendo que los modelos realicen comparaciones históricas y proyecciones de manera consistente.
