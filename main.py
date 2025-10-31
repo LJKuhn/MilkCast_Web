@@ -180,10 +180,64 @@ def descargar_imagen(url, path):
 descargar_imagen(url_mapa_unidades, os.path.join(imagenes_dir, "mapa.png"))
 descargar_imagen(url_grafico_barras, os.path.join(imagenes_dir, "grafico.png"))
 
+# Función para cargar CSVs con manejo robusto de errores
+@st.cache_data
+def cargar_csv_seguro(ruta_archivo, nombre_archivo):
+    """Carga un CSV con manejo robusto de errores"""
+    try:
+        # Verificar que el archivo existe
+        if not os.path.exists(ruta_archivo):
+            st.error(f"❌ Archivo no encontrado: {nombre_archivo}")
+            return pd.DataFrame()
+        
+        # Mostrar información del archivo
+        file_size = os.path.getsize(ruta_archivo) / (1024 * 1024)  # MB
+        st.info(f"📄 Cargando {nombre_archivo} ({file_size:.2f} MB)")
+        
+        # Intentar carga normal primero
+        df = pd.read_csv(ruta_archivo)
+        st.success(f"✅ {nombre_archivo} cargado correctamente ({df.shape[0]} filas, {df.shape[1]} columnas)")
+        return df
+        
+    except pd.errors.ParserError as e:
+        st.warning(f"⚠️ Error de parsing en {nombre_archivo}: {str(e)}")
+        st.info("🔧 Intentando métodos alternativos de carga...")
+        
+        # Método 1: Intentar con sep=None y engine='python'
+        try:
+            df = pd.read_csv(ruta_archivo, sep=None, engine='python', on_bad_lines='skip')
+            st.info(f"✅ {nombre_archivo} cargado con separador automático ({df.shape[0]} filas, {df.shape[1]} columnas)")
+            return df
+        except Exception:
+            pass
+        
+        # Método 2: Intentar con delimitador de coma y manejo de errores
+        try:
+            df = pd.read_csv(ruta_archivo, sep=',', on_bad_lines='skip', quoting=1)
+            st.info(f"✅ {nombre_archivo} cargado omitiendo líneas problemáticas ({df.shape[0]} filas, {df.shape[1]} columnas)")
+            return df
+        except Exception:
+            pass
+        
+        # Método 3: Intentar leyendo solo las primeras líneas para diagnóstico
+        try:
+            df_sample = pd.read_csv(ruta_archivo, nrows=10, on_bad_lines='skip')
+            st.warning(f"⚠️ Solo se pudieron cargar las primeras 10 filas de {nombre_archivo}")
+            st.info(f"📊 Muestra: {df_sample.shape[0]} filas, {df_sample.shape[1]} columnas")
+            return df_sample
+        except Exception:
+            pass
+        
+        st.error(f"❌ No se pudo cargar {nombre_archivo} con ningún método")
+        return pd.DataFrame()
+        
+    except Exception as e:
+        st.error(f"❌ Error inesperado cargando {nombre_archivo}: {str(e)}")
+        return pd.DataFrame()
 
-# Cargar el archivo combinado (usado para las visualizaciones)
-df = pd.read_csv("modelos/archivo.csv")
-df2 = pd.read_csv("modelos/dataset_LIMPIO_original.csv")
+# Cargar los archivos CSV con manejo robusto de errores
+df = cargar_csv_seguro("modelos/archivo.csv", "archivo.csv")
+df2 = cargar_csv_seguro("modelos/dataset_LIMPIO_original.csv", "dataset_LIMPIO_original.csv")
 
 # Función para limpiar el estado cuando se cambia de tab
 def limpiar_estado_tab_actual(tab_seleccionado):
@@ -198,7 +252,38 @@ def limpiar_estado_tab_actual(tab_seleccionado):
 with tab1:
     limpiar_estado_tab_actual("Datos y Gráficos")  # Limpiar las otras pestañas al entrar a esta
 
-    C_visualizacion(df, df2)
+    # Verificar que los DataFrames no estén vacíos antes de proceder
+    if df.empty or df2.empty:
+        st.error("❌ No se pudieron cargar los archivos CSV necesarios para las visualizaciones.")
+        st.info("📊 Archivos requeridos: archivo.csv y dataset_LIMPIO_original.csv")
+        
+        if df.empty:
+            st.warning("⚠️ archivo.csv no disponible")
+        if df2.empty:
+            st.warning("⚠️ dataset_LIMPIO_original.csv no disponible")
+        
+        # Mostrar información de debugging
+        with st.expander("🔍 Información de Debugging"):
+            st.write("**Archivos en la carpeta modelos:**")
+            try:
+                archivos_modelos = os.listdir("modelos")
+                for archivo in archivos_modelos:
+                    ruta_completa = os.path.join("modelos", archivo)
+                    if os.path.isfile(ruta_completa):
+                        tamaño = os.path.getsize(ruta_completa) / 1024  # KB
+                        st.write(f"- {archivo} ({tamaño:.2f} KB)")
+            except Exception as e:
+                st.write(f"Error listando archivos: {e}")
+                
+        st.info("💡 **Solución temporal:** La aplicación continuará funcionando con las otras pestañas (modelos de ML).")
+    
+    else:
+        # Solo ejecutar visualizaciones si ambos DataFrames están disponibles
+        try:
+            C_visualizacion(df, df2)
+        except Exception as e:
+            st.error(f"❌ Error en visualizaciones: {str(e)}")
+            st.info("📊 Las visualizaciones no están disponibles temporalmente.")
 
     st.markdown(
         '''
