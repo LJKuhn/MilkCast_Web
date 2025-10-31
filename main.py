@@ -56,21 +56,21 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
 # 3. Si hay errores de descarga, verificar permisos en Google Drive
 files_to_download = {
     # Modelos ya usados en la app
-    "https://drive.google.com/file/d/1lXK5IvmoBYuFEDO35O6yv9yAjITrNUXh": "modelo_regresion-Precio-IPC-Dolar.pkl",
-    "https://drive.google.com/file/d/1WKw9ZazXYoeppAyE_NT-iAkFWkuum8mN": "modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl",
+    "https://drive.google.com/file/d/16ZqjF63HtFxV7fIVqJY-EQgIP0nGBgSA": "modelo_regresion-Precio-IPC-Dolar.pkl",
+    "https://drive.google.com/file/d/1lp3kmeGeTPVx8-QZu6HFcSPqJFbU2zya": "modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl",
 
     # Modelos OCLA (REEMPLAZAR con los IDs/URLs reales)
-    "https://drive.google.com/file/d/1yvkKHlS2sHxZ6uvIafQqORn4hE6cQl3s": "modelo_A_rentabilidad.pkl",
-    "https://drive.google.com/file/d/12wjhEPeJ8I08bVJwIEHTnbudR737P7St": "modelo_B_costos.pkl",
-    "https://drive.google.com/file/d/1LLBwmvRzB4TXC4UX8bYPpoRVTMy0bifh": "modelo_D_precio_queso.pkl",
-    "https://drive.google.com/file/d/1kDDitTJ4HpiABZHqR7a8uLBF75Lr1YKP": "modelo_E_precio_internacional.pkl",
-    "https://drive.google.com/file/d/1E1f9LPMFY6RU_G4etqkdANCXy1BpOE-q": "modelo_F_precio_novillos.pkl",
-    "https://drive.google.com/file/d/1aNZIMH9_MOeAJrmTBrT7T4rGHLI8e4Wg": "modelo_G_variables_macroeconomicas.pkl",
-    "https://drive.google.com/file/d/1e-dMgzQDdzUM10RFojdwkAzpIiLZgkm8": "modelo_H_productos_lacteos.pkl",
+    "https://drive.google.com/file/d/1HVDxaJpuWk3rUIPOlXBsIFyWW32syuRi": "modelo_A_rentabilidad.pkl",
+    "https://drive.google.com/file/d/1kRIzujwRxQzJ9b738D_oBPMJVNeU9DLZ": "modelo_B_costos.pkl",
+    "https://drive.google.com/file/d/1r5PDqxLNQOD2QKQXJd5XFfKg5K72V_Jm": "modelo_D_precio_queso.pkl",
+    "https://drive.google.com/file/d/1BjwGFe_djZ3c3W6XuedKQkorDB4cp4Yk": "modelo_E_precio_internacional.pkl",
+    "https://drive.google.com/file/d/1VprLKVHthzzGnt7MB14KyTPmL9qUsGvt": "modelo_F_precio_novillos.pkl",
+    "https://drive.google.com/file/d/1qcHUmGB9DKe9lrmzkfUZrvBPGQF7Sedh": "modelo_G_variables_macroeconomicas.pkl",
+    "https://drive.google.com/file/d/1plMbfsdqBAZAJxy9ziQdflrsD39_Fi13": "modelo_H_productos_lacteos.pkl",
 
     # CSVs usados por la app (REEMPLAZAR con IDs/URLs reales)
-    "https://drive.google.com/file/d/1-_Co4-GszOdutP0Z5tAEWTmjDqKEuEMG": "archivo.csv",
-    "https://drive.google.com/file/d/1hdF61HgxE_ESN8cOYM3D3GBehxpyCyaG": "dataset_LIMPIO_original.csv",
+    "https://drive.google.com/file/d/1oa0iGxqlGgOmWpfLWO7pMeYjGuv4AFzV": "archivo.csv",
+    "https://drive.google.com/file/d/1Xr7IbFcIdZvbrCsqKzv7fR-XW8zhdZ2I": "dataset_LIMPIO_original.csv",
 }
 
 # Directorio donde se guardarán los modelos
