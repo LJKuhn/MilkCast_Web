@@ -50,8 +50,10 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
 ])
 
 # URLs de los modelos y archivos en Google Drive (usando el formato adecuado para gdown)
-# Aquí se centralizan todas las descargas que necesita la app.
-# Reemplaza los valores "REEMPLAZAR_ID_..." por los IDs reales de Drive (o las URLs completas).
+# IMPORTANTE: Para que las descargas funcionen correctamente:
+# 1. Los archivos en Google Drive deben ser públicos (compartir con "cualquier persona con el enlace")
+# 2. Usar el formato: https://drive.google.com/file/d/ID_DEL_ARCHIVO
+# 3. Si hay errores de descarga, verificar permisos en Google Drive
 files_to_download = {
     # Modelos ya usados en la app
     "https://drive.google.com/file/d/1lXK5IvmoBYuFEDO35O6yv9yAjITrNUXh": "modelo_regresion-Precio-IPC-Dolar.pkl",
@@ -75,24 +77,104 @@ files_to_download = {
 modelos_dir = "modelos"
 os.makedirs(modelos_dir, exist_ok=True)
 
+# Función para verificar si un archivo PKL es válido
+def verificar_archivo_pkl(path):
+    """Verifica si un archivo PKL es válido y no está corrupto"""
+    try:
+        with open(path, 'rb') as f:
+            # Leer los primeros bytes para verificar que no sea HTML
+            primeros_bytes = f.read(100)
+            f.seek(0)  # Volver al inicio
+            
+            # Si empieza con '<', probablemente es HTML (error de Google Drive)
+            if primeros_bytes.startswith(b'<'):
+                return False, "El archivo parece ser HTML en lugar de un modelo PKL"
+            
+            # Intentar cargar el pickle para verificar que es válido
+            pickle.load(f)
+            return True, "Archivo PKL válido"
+    except Exception as e:
+        return False, f"Error validando PKL: {str(e)}"
+
 # Función para descargar un archivo si no existe
 def descargar_modelo(url, path):
-    if not os.path.exists(path):
-        print(f"Descargando {os.path.basename(path)}...")
+    archivo_existe = os.path.exists(path)
+    archivo_valido = False
+    
+    if archivo_existe:
+        if path.endswith('.pkl'):
+            archivo_valido, mensaje = verificar_archivo_pkl(path)
+            if not archivo_valido:
+                print(f"⚠️ {os.path.basename(path)} existe pero está corrupto: {mensaje}")
+                print(f"🔄 Re-descargando {os.path.basename(path)}...")
+                os.remove(path)  # Eliminar archivo corrupto
+                archivo_existe = False
+        else:
+            archivo_valido = True  # Para CSVs e imágenes, asumir que están bien si existen
+    
+    if not archivo_existe or not archivo_valido:
+        print(f"📥 Descargando {os.path.basename(path)}...")
         try:
             # Utilizamos gdown para descargar el archivo
             # gdown acepta tanto URLs tipo /file/d/ID como /uc?id=ID
             gdown.download(url, path, quiet=False)
-            print(f"Archivo descargado y guardado en {path}.")
+            
+            # Verificar que el archivo descargado sea válido (solo para PKL)
+            if path.endswith('.pkl'):
+                es_valido, mensaje = verificar_archivo_pkl(path)
+                if es_valido:
+                    print(f"✅ {os.path.basename(path)} descargado y validado correctamente.")
+                else:
+                    print(f"❌ {os.path.basename(path)} descargado pero no es válido: {mensaje}")
+                    print("💡 Verifica que la URL de Google Drive sea pública y correcta.")
+            else:
+                print(f"✅ {os.path.basename(path)} descargado correctamente.")
+                
         except Exception as e:
-            print(f"Error en la descarga: {e}")
+            print(f"❌ Error en la descarga de {os.path.basename(path)}: {e}")
+            print("💡 Verifica que la URL de Google Drive sea pública y accesible.")
     else:
-        print(f"El archivo {os.path.basename(path)} ya existe.")
+        print(f"✅ {os.path.basename(path)} ya existe y es válido.")
 
 # Descargar todos los archivos listados en files_to_download (si no existen)
+st.info("🔄 Verificando y descargando archivos necesarios...")
+archivos_descargados = []
+archivos_con_error = []
+
 for url, filename in files_to_download.items():
     target_path = os.path.join(modelos_dir, filename)
-    descargar_modelo(url, target_path)
+    try:
+        descargar_modelo(url, target_path)
+        if os.path.exists(target_path):
+            archivos_descargados.append(filename)
+        else:
+            archivos_con_error.append(filename)
+    except Exception as e:
+        archivos_con_error.append(f"{filename} (Error: {str(e)})")
+
+# Mostrar resumen de descargas
+if archivos_descargados:
+    st.success(f"✅ Archivos disponibles: {len(archivos_descargados)}")
+if archivos_con_error:
+    st.warning(f"⚠️ Archivos con problemas: {len(archivos_con_error)}")
+    with st.expander("Ver detalles de archivos problemáticos"):
+        for archivo in archivos_con_error:
+            st.write(f"- {archivo}")
+        
+        st.markdown("### 🔧 Soluciones recomendadas:")
+        st.markdown("""
+        1. **Verificar permisos en Google Drive:**
+           - Los archivos deben ser públicos (compartir con "cualquier persona con el enlace")
+           - El enlace debe ser directo al archivo, no a una carpeta
+        
+        2. **Formato correcto de URL:**
+           - Usar: `https://drive.google.com/file/d/ID_DEL_ARCHIVO`
+           - No usar: `https://drive.google.com/open?id=...` o enlaces de vista previa
+        
+        3. **Si persiste el problema:**
+           - Re-deployar la aplicación en Streamlit para limpiar caché
+           - Verificar que los archivos PKL no estén corruptos en Google Drive
+        """)
 
 # Función para cargar los modelos en caché usando st.cache_resource
 @st.cache_resource
@@ -103,16 +185,39 @@ def cargar_modelo(path):
 # Función para cargar modelos locales (DESDE CARPETA MODELOS)
 @st.cache_resource
 def cargar_modelo_local(nombre_modelo):
-    """Carga modelos desde la carpeta modelos de MilkCast-V2"""
+    """Carga modelos desde la carpeta modelos con validación robusta"""
     try:
-        # Ruta hacia la carpeta modelos dentro de MilkCast-V2
+        # Ruta hacia la carpeta modelos
         ruta = os.path.join(modelos_dir, f"{nombre_modelo}.pkl")
-        if os.path.exists(ruta):
-            with open(ruta, 'rb') as f:
-                return pickle.load(f)
-        else:
+        
+        if not os.path.exists(ruta):
             st.error(f"❌ No se encontró el modelo: {ruta}")
             return None
+        
+        # Verificar tamaño del archivo
+        tamaño_archivo = os.path.getsize(ruta)
+        if tamaño_archivo < 1000:  # Menos de 1KB probablemente está corrupto
+            st.error(f"❌ {nombre_modelo}: Archivo muy pequeño ({tamaño_archivo} bytes), probablemente corrupto")
+            return None
+        
+        # Verificar que no sea HTML (error de Google Drive)
+        with open(ruta, 'rb') as f:
+            primeros_bytes = f.read(100)
+            if primeros_bytes.startswith(b'<'):
+                st.error(f"❌ {nombre_modelo}: El archivo descargado es HTML en lugar de un modelo PKL")
+                st.info("💡 La URL de Google Drive podría no ser pública o estar mal configurada")
+                return None
+        
+        # Cargar el modelo
+        with open(ruta, 'rb') as f:
+            modelo = pickle.load(f)
+            st.success(f"✅ {nombre_modelo} cargado correctamente")
+            return modelo
+            
+    except pickle.UnpicklingError as e:
+        st.error(f"❌ {nombre_modelo}: Error de deserialización - {str(e)}")
+        st.info("💡 El archivo PKL podría estar corrupto o ser incompatible")
+        return None
     except Exception as e:
         st.error(f"❌ Error cargando {nombre_modelo}: {str(e)}")
         return None
@@ -154,6 +259,33 @@ def mostrar_info_modelo(model, nombre_modelo):
 with st.expander("Información de los Modelos"):
     mostrar_info_modelo(model2, "Modelo de Predicción")
     mostrar_info_modelo(model1, "Modelo de Clasificación")
+    
+    # Información adicional sobre archivos descargados
+    st.markdown("### 📁 Estado de archivos en carpeta modelos:")
+    try:
+        archivos_modelos = os.listdir(modelos_dir)
+        for archivo in sorted(archivos_modelos):
+            if archivo.endswith('.pkl'):
+                ruta_completa = os.path.join(modelos_dir, archivo)
+                tamaño = os.path.getsize(ruta_completa) / 1024  # KB
+                
+                # Verificar si es un archivo válido
+                if tamaño < 1:
+                    estado = "❌ Muy pequeño (corrupto)"
+                else:
+                    try:
+                        with open(ruta_completa, 'rb') as f:
+                            primeros_bytes = f.read(10)
+                            if primeros_bytes.startswith(b'<'):
+                                estado = "❌ HTML (error de Drive)"
+                            else:
+                                estado = "✅ Formato correcto"
+                    except:
+                        estado = "❌ Error al leer"
+                
+                st.write(f"- **{archivo}** ({tamaño:.2f} KB) - {estado}")
+    except Exception as e:
+        st.write(f"Error listando archivos: {e}")
 
 # URLs de las imágenes en Google Drive (en formato adecuado)
 url_mapa_unidades = "https://drive.google.com/uc?id=1PgVHUgz2u9iOgDUcF4UL4JgVc9DUJj4u"
