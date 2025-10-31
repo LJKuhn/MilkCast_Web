@@ -15,6 +15,13 @@ MilkCast es una herramienta de análisis predictivo desarrollada como parte de l
 - **📊 Análisis Exploratorio de Datos (EDA)**: Visualización interactiva de datos del sector lácteo
 - **🔮 Predicción por IPC y Dólar**: Modelo basado en Índice de Precios al Consumidor y tipo de cambio
 - **🥛 Predicción por Productos**: Predicción basada en precios de leche entera, queso y yogur
+- **🎯 Predicción de Rentabilidad**: Modelo A - Análisis de rentabilidad con 6 variables
+- **💰 Predicción de Costos**: Modelo B - Estimación de costos de producción
+- **🧀 Predicción Precio Queso**: Modelo D - Precio de queso cuartirolo
+- **🌍 Predicción Internacional**: Modelo E - Precios internacionales LPE GDT
+- **🐄 Predicción Novillos**: Modelo F - Precios del mercado ganadero
+- **📊 Variables Macroeconómicas**: Modelo G - Predicción simple con IPC y dólar
+- **🥛 Productos Lácteos Específicos**: Modelo H - Basado en precios minoristas
 - **📈 Visualizaciones Dinámicas**: Gráficos interactivos con Plotly
 
 ## 🏗️ Estructura del Proyecto
@@ -32,8 +39,15 @@ MilkCast_Web/
 │   └── componente_clasificacion.py      # Predicción con productos lácteos
 │
 ├── 📁 modelos/                          # Modelos ML entrenados
-│   ├── modelo_regresion-Precio-IPC-Dolar.pkl           # Modelo IPC-Dólar
-│   ├── modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl  # Modelo productos
+│   ├── modelo_regresion-Precio-IPC-Dolar.pkl           # Modelo IPC-Dólar (original)
+│   ├── modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl  # Modelo productos (original)
+│   ├── modelo_A_rentabilidad.pkl                       # Modelo A - Rentabilidad
+│   ├── modelo_B_costos.pkl                             # Modelo B - Costos
+│   ├── modelo_D_precio_queso.pkl                       # Modelo D - Precio Queso
+│   ├── modelo_E_precio_internacional.pkl               # Modelo E - Internacional
+│   ├── modelo_F_precio_novillos.pkl                    # Modelo F - Novillos
+│   ├── modelo_G_variables_macroeconomicas.pkl          # Modelo G - Variables Macro
+│   ├── modelo_H_productos_lacteos.pkl                  # Modelo H - Productos Lácteos
 │   └── archivo.csv                      # Datos de referencia
 │
 ├── 📁 Imagenes/                         # Recursos gráficos
@@ -132,7 +146,7 @@ Este proyecto incluye configuración para **Visual Studio Code DevContainers**:
 
 ## 🖥️ Interfaz de Usuario
 
-La aplicación cuenta con **3 pestañas principales**:
+La aplicación cuenta con **10 pestañas principales**:
 
 ### 1. 📊 "Datos y Gráficos"
 - Análisis exploratorio interactivo
@@ -140,17 +154,59 @@ La aplicación cuenta con **3 pestañas principales**:
 - Mapas de unidades productivas
 - Información contextual del sector
 
-### 2. 💱 "Predicción con IPC y dólar"
+### 2. 💱 "IPC y Dólar"
 - Input para valores de IPC y tipo de cambio
 - Instrucciones detalladas para cálculo de IPC acumulado
 - Predicción en tiempo real
 - Visualización de resultados
 
-### 3. 🧀 "Predicción con productos"
+### 3. � "Productos Básicos"
 - Input para precios de productos lácteos
 - Predicción basada en precios del mercado
 - Comparación entre productos
 - Análisis de correlaciones
+
+### 4. 🎯 "Rentabilidad" (Modelo A)
+- Predicción de rentabilidad con 6 variables
+- Análisis de costos vs ingresos
+- Preprocesamiento con StandardScaler
+- Interpretación de niveles de rentabilidad
+
+### 5. 💰 "Costos" (Modelo B)
+- Estimación de costos de producción
+- Variables macroeconómicas y sectoriales
+- Sin preprocesamiento (datos originales)
+- Análisis de factores influyentes
+
+### 6. 🧀 "Precio Queso" (Modelo D)
+- Predicción de precio de queso cuartirolo
+- Basado en precios lácteos e índices
+- Preprocesamiento con StandardScaler
+- Análisis de relaciones queso/leche
+
+### 7. 🌍 "Internacional" (Modelo E)
+- Predicción de precios internacionales LPE GDT
+- Índices FAO y variables comerciales
+- Preprocesamiento con StandardScaler
+- Conversión automática USD/ARS
+
+### 8. 🐄 "Novillos" (Modelo F)
+- Predicción de precios de novillos
+- Variables del mercado ganadero y macroeconómicas
+- Preprocesamiento con StandardScaler
+- Comparación con precios de vaquillonas
+
+### 9. 📊 "Variables Macro" (Modelo G)
+- Predicción simple con IPC y dólar
+- Modelo económico básico (2 variables)
+- Sin preprocesamiento (datos originales)
+- Análisis macroeconómico
+
+### 10. 🥛 "Productos H" (Modelo H)
+- Predicción basada en precios minoristas
+- Leche, queso y yogur específicos
+- Sin preprocesamiento (datos originales)
+- Calculadora de relaciones de precios
 
 ## 🔄 Funcionalidades Técnicas
 

@@ -9,6 +9,14 @@ import gdown
 from componentes.componente_prediccion import C_prediccion
 from componentes.componente_clasificacion import C_clasificacion
 from componentes.componente_eda import C_visualizacion
+# Nuevos componentes OCLA
+from componentes.componente_rentabilidad import C_rentabilidad
+from componentes.componente_costos import C_costos
+from componentes.componente_precio_queso import C_precio_queso
+from componentes.componente_precio_internacional import C_precio_internacional
+from componentes.componente_precio_novillos import C_precio_novillos
+from componentes.componente_variables_macro import C_variables_macro
+from componentes.componente_productos_lacteos import C_productos_lacteos
 
 # Configuración de la página
 st.set_page_config(page_title="MilkCast", layout="wide")
@@ -28,11 +36,40 @@ st.markdown("""
 st.markdown("<h1 style='font-size: 50px;'>ML en el sector agropecuario</h1>", unsafe_allow_html=True)
 
 # Creación de pestañas
-tab1, tab2, tab3 = st.tabs(["Datos y Gráficos", "Prediccion con IPC y dolar", "Prediccion con productos"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
+    "📊 Datos y Gráficos", 
+    "💱 IPC y Dólar", 
+    "🥛 Productos Básicos",
+    "🎯 Rentabilidad", 
+    "💰 Costos", 
+    "🧀 Precio Queso",
+    "🌍 Internacional", 
+    "🐄 Novillos", 
+    "📊 Variables Macro", 
+    "🥛 Productos H"
+])
 
-# URLs de los modelos en Google Drive (usando el formato adecuado para gdown)
-url_modelprediccionUS = "https://drive.google.com/file/d/1-sjXKNng7Mxevubem3ei54m0cYuv132D"
-url_modelprediccionPr = "https://drive.google.com/file/d/1mElfQCidhvGXT86gPnoKEaXPRtrWqVdJ"
+# URLs de los modelos y archivos en Google Drive (usando el formato adecuado para gdown)
+# Aquí se centralizan todas las descargas que necesita la app.
+# Reemplaza los valores "REEMPLAZAR_ID_..." por los IDs reales de Drive (o las URLs completas).
+files_to_download = {
+    # Modelos ya usados en la app
+    "https://drive.google.com/file/d/1lXK5IvmoBYuFEDO35O6yv9yAjITrNUXh": "modelo_regresion-Precio-IPC-Dolar.pkl",
+    "https://drive.google.com/file/d/1WKw9ZazXYoeppAyE_NT-iAkFWkuum8mN": "modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl",
+
+    # Modelos OCLA (REEMPLAZAR con los IDs/URLs reales)
+    "https://drive.google.com/file/d/1yvkKHlS2sHxZ6uvIafQqORn4hE6cQl3s": "modelo_A_rentabilidad.pkl",
+    "https://drive.google.com/file/d/12wjhEPeJ8I08bVJwIEHTnbudR737P7St": "modelo_B_costos.pkl",
+    "https://drive.google.com/file/d/1LLBwmvRzB4TXC4UX8bYPpoRVTMy0bifh": "modelo_D_precio_queso.pkl",
+    "https://drive.google.com/file/d/1kDDitTJ4HpiABZHqR7a8uLBF75Lr1YKP": "modelo_E_precio_internacional.pkl",
+    "https://drive.google.com/file/d/1E1f9LPMFY6RU_G4etqkdANCXy1BpOE-q": "modelo_F_precio_novillos.pkl",
+    "https://drive.google.com/file/d/1aNZIMH9_MOeAJrmTBrT7T4rGHLI8e4Wg": "modelo_G_variables_macroeconomicas.pkl",
+    "https://drive.google.com/file/d/1e-dMgzQDdzUM10RFojdwkAzpIiLZgkm8": "modelo_H_productos_lacteos.pkl",
+
+    # CSVs usados por la app (REEMPLAZAR con IDs/URLs reales)
+    "https://drive.google.com/file/d/1-_Co4-GszOdutP0Z5tAEWTmjDqKEuEMG": "archivo.csv",
+    "https://drive.google.com/file/d/1hdF61HgxE_ESN8cOYM3D3GBehxpyCyaG": "dataset_LIMPIO_original.csv",
+}
 
 # Directorio donde se guardarán los modelos
 modelos_dir = "modelos"
@@ -44,6 +81,7 @@ def descargar_modelo(url, path):
         print(f"Descargando {os.path.basename(path)}...")
         try:
             # Utilizamos gdown para descargar el archivo
+            # gdown acepta tanto URLs tipo /file/d/ID como /uc?id=ID
             gdown.download(url, path, quiet=False)
             print(f"Archivo descargado y guardado en {path}.")
         except Exception as e:
@@ -51,9 +89,10 @@ def descargar_modelo(url, path):
     else:
         print(f"El archivo {os.path.basename(path)} ya existe.")
 
-# Descargar los modelos solo si no existen
-descargar_modelo(url_modelprediccionUS, os.path.join(modelos_dir, "modelo_regresion-Precio-IPC-Dolar.pkl"))
-descargar_modelo(url_modelprediccionPr, os.path.join(modelos_dir, "modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl"))
+# Descargar todos los archivos listados en files_to_download (si no existen)
+for url, filename in files_to_download.items():
+    target_path = os.path.join(modelos_dir, filename)
+    descargar_modelo(url, target_path)
 
 # Función para cargar los modelos en caché usando st.cache_resource
 @st.cache_resource
@@ -61,9 +100,46 @@ def cargar_modelo(path):
     with open(path, 'rb') as file:
         return pickle.load(file)
 
-# Cargar los modelos (se cargan solo una vez)
+# Función para cargar modelos locales (DESDE CARPETA MODELOS)
+@st.cache_resource
+def cargar_modelo_local(nombre_modelo):
+    """Carga modelos desde la carpeta modelos de MilkCast-V2"""
+    try:
+        # Ruta hacia la carpeta modelos dentro de MilkCast-V2
+        ruta = os.path.join(modelos_dir, f"{nombre_modelo}.pkl")
+        if os.path.exists(ruta):
+            with open(ruta, 'rb') as f:
+                return pickle.load(f)
+        else:
+            st.error(f"❌ No se encontró el modelo: {ruta}")
+            return None
+    except Exception as e:
+        st.error(f"❌ Error cargando {nombre_modelo}: {str(e)}")
+        return None
+
+# Cargar los modelos existentes (se cargan solo una vez)
 model1 = cargar_modelo(os.path.join(modelos_dir, "modelo_regresion-Precio-IPC-Dolar.pkl"))
 model2 = cargar_modelo(os.path.join(modelos_dir, "modelo_regresion-Precio-ComEnt-Queso-Yogur.pkl"))
+
+# Cargar los nuevos modelos OCLA (PARA DESARROLLO LOCAL)
+try:
+    model_A = cargar_modelo_local("modelo_A_rentabilidad")
+    model_B = cargar_modelo_local("modelo_B_costos") 
+    model_D = cargar_modelo_local("modelo_D_precio_queso")
+    model_E = cargar_modelo_local("modelo_E_precio_internacional")
+    model_F = cargar_modelo_local("modelo_F_precio_novillos")
+    model_G = cargar_modelo_local("modelo_G_variables_macroeconomicas") 
+    model_H = cargar_modelo_local("modelo_H_productos_lacteos")
+    
+    modelos_ocla_cargados = True
+    st.success("✅ Todos los modelos OCLA cargados correctamente")
+    
+except Exception as e:
+    modelos_ocla_cargados = False
+    st.warning(f"⚠️ Algunos modelos OCLA no pudieron cargarse: {e}")
+    
+    # Crear modelos dummy para evitar errores
+    model_A = model_B = model_D = model_E = model_F = model_G = model_H = None
 
 # Función para mostrar tipo y verificar método 'predict' en los modelos
 def mostrar_info_modelo(model, nombre_modelo):
@@ -107,6 +183,7 @@ descargar_imagen(url_grafico_barras, os.path.join(imagenes_dir, "grafico.png"))
 
 # Cargar el archivo combinado (usado para las visualizaciones)
 df = pd.read_csv("modelos/archivo.csv")
+df2 = pd.read_csv("modelos/dataset_LIMPIO_original.csv")
 
 # Función para limpiar el estado cuando se cambia de tab
 def limpiar_estado_tab_actual(tab_seleccionado):
@@ -121,7 +198,7 @@ def limpiar_estado_tab_actual(tab_seleccionado):
 with tab1:
     limpiar_estado_tab_actual("Datos y Gráficos")  # Limpiar las otras pestañas al entrar a esta
 
-    C_visualizacion(df)
+    C_visualizacion(df, df2)
 
     st.markdown(
         '''
@@ -164,3 +241,66 @@ with tab2:
 with tab3:
     limpiar_estado_tab_actual("Prediccion con productos")  # Limpiar las otras pestañas al entrar a esta
     C_clasificacion(model2)
+
+# Contenido de la pestaña 4: Rentabilidad (Modelo A)
+with tab4:
+    limpiar_estado_tab_actual("Rentabilidad")
+    if modelos_ocla_cargados and model_A is not None:
+        C_rentabilidad(model_A)
+    else:
+        st.error("❌ Modelo A (Rentabilidad) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_A_rentabilidad.pkl")
+
+# Contenido de la pestaña 5: Costos (Modelo B)
+with tab5:
+    limpiar_estado_tab_actual("Costos")
+    if modelos_ocla_cargados and model_B is not None:
+        C_costos(model_B)
+    else:
+        st.error("❌ Modelo B (Costos) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_B_costos.pkl")
+
+# Contenido de la pestaña 6: Precio Queso (Modelo D)
+with tab6:
+    limpiar_estado_tab_actual("Precio Queso")
+    if modelos_ocla_cargados and model_D is not None:
+        C_precio_queso(model_D)
+    else:
+        st.error("❌ Modelo D (Precio Queso) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_D_precio_queso.pkl")
+
+# Contenido de la pestaña 7: Precio Internacional (Modelo E)
+with tab7:
+    limpiar_estado_tab_actual("Internacional")
+    if modelos_ocla_cargados and model_E is not None:
+        C_precio_internacional(model_E)
+    else:
+        st.error("❌ Modelo E (Precio Internacional) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_E_precio_internacional.pkl")
+
+# Contenido de la pestaña 8: Precio Novillos (Modelo F)
+with tab8:
+    limpiar_estado_tab_actual("Novillos")
+    if modelos_ocla_cargados and model_F is not None:
+        C_precio_novillos(model_F)
+    else:
+        st.error("❌ Modelo F (Precio Novillos) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_F_precio_novillos.pkl")
+
+# Contenido de la pestaña 9: Variables Macro (Modelo G)
+with tab9:
+    limpiar_estado_tab_actual("Variables Macro")
+    if modelos_ocla_cargados and model_G is not None:
+        C_variables_macro(model_G)
+    else:
+        st.error("❌ Modelo G (Variables Macro) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_G_variables_macroeconomicas.pkl")
+
+# Contenido de la pestaña 10: Productos Lácteos (Modelo H)
+with tab10:
+    limpiar_estado_tab_actual("Productos H")
+    if modelos_ocla_cargados and model_H is not None:
+        C_productos_lacteos(model_H)
+    else:
+        st.error("❌ Modelo H (Productos Lácteos) no disponible. Verifique que el archivo PKL esté en la carpeta correcta.")
+        st.info("📁 Ruta esperada: modelos/modelo_H_productos_lacteos.pkl")
