@@ -58,9 +58,7 @@ Thumbs.db
 
 # Model and data artifacts (opcional)
 # Si quieres versionar modelos o datasets, elimina estas líneas
-modelos/*.pkl
-modelos/*.csv
-imagenes/*
+
 
 # Secrets
 .env
